@@ -9,3 +9,12 @@ git commit -m "Mensaje..."
 
 ## Subir rama al repositorio
 git push origin nombre_rama
+
+## Cambiar a rama master
+git checkout master
+
+## Mezclar ramas
+git merge nombre_rama
+
+## Subir cambios al repositorio
+git push origin
