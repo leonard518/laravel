@@ -1,5 +1,5 @@
-Class-04:
+Class-05:
 
-## Manejo de Contoladores.
-### app/Http/Controllers
-### app/Http/routes.php
+## Manejo de Modelos.
+### con artisan generamos los modelos automaticamente
+php artisan make:model nombre_modelo
