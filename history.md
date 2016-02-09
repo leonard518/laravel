@@ -6,8 +6,8 @@ resource/views
 
 ### Crear una vista debemos crear una ruta
 Route::get('/', 'FrontController@index');
-Route::get('/', 'FrontController@contacto');
-Route::get('/', 'FrontController@reviews');
+Route::get('/contacto', 'FrontController@contacto');
+Route::get('/reviews', 'FrontController@reviews');
 
 ### Agragar el html de las siguientes vistas en la carpeta "Front" en la raiz del proyecto.
 index.html - contacto.html - reviews.html 
