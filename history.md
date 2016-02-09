@@ -1,21 +1,18 @@
-Class-06:
+Class-07:
 
-## Manejo de migraciones.
-### Crear los atributos de las a crear movie y genre
-### Ruta de los archivos:
-database/migrations
+## Manejo de Vistas.
+### Ruta de las vistas:
+resource/views
 
+### Crear una vista debemos crear una ruta
+Route::get('/', 'FrontController@index');
+Route::get('/', 'FrontController@contacto');
+Route::get('/', 'FrontController@reviews');
 
-### Crear relaciones Ejemplo:
-$table->integer('user_id')->unsigned();
-$table->foreign('user_id')->references('id')->on('users');
+### Agragar el html de las siguientes vistas en la carpeta "Front" en la raiz del proyecto.
+index.html - contacto.html - reviews.html 
 
-### Correr las migraciones
-Nota: Antes de corre las migraciones por artisan de debe configurar el archivo .env con la informacion de su servidor de base de datos, la base de datos debe de estar creada.
-
-php artisan migrate
-
-### Utilizar los rollback
-Nota: Sirve para volver atras si se comente un error en la base de datos.
-
-php artisan migrate:rollback
+### Agragar las siguiente carpetas a la carpeta "public"
+Front/css -> public/css
+Front/images -> public/images
+Front/js -> public/js
