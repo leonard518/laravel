@@ -1,18 +1,14 @@
-Class-07:
+Class-08:
 
-## Manejo de Vistas.
-### Ruta de las vistas:
-resource/views
+## Manejo de Templates con Blade.
+### Sistema de plantillas
+Se basas en herencias y secciones 
 
-### Crear una vista debemos crear una ruta
-Route::get('/', 'FrontController@index');
-Route::get('/contacto', 'FrontController@contacto');
-Route::get('/reviews', 'FrontController@reviews');
+### Vista Front
+#### Cambiar los archivos
+index.php -> index.blade.php
+contacto.php -> contacto.blade.php
+reviews.php -> reviews.blade.php
 
-### Agragar el html de las siguientes vistas en la carpeta "Front" en la raiz del proyecto.
-index.html - contacto.html - reviews.html 
-
-### Agragar las siguiente carpetas a la carpeta "public"
-Front/css -> public/css
-Front/images -> public/images
-Front/js -> public/js
+### Vista admin
+Agregar los archivos css, js y font en la carpeta "Admin"
