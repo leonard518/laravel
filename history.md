@@ -1,47 +1,14 @@
 Class-09:
 
-## Crear un CRUD - Crear Usuario.
-### Crear UsuarioController
-php artisan make:controller UsuarioController
+## Crear un CRUD - Leer Usuarios.
+### Index UsuarioController
+public function index()
+    {
+        /* Trae la informa del modelo  User*/
+        $users = \Cinema\User::All();
+        return view('usuario.index', compact('users'));
+    }
 
-### Crear Ruta RESTful para el controlador 
-Route::resource('usuario', 'UsuarioController');
-
-### Agregar el componente Laravel Collective 5.1
-Url: <https://laravelcollective.com/docs/5.1/html>
-#### Agregar en el arreglo Providers:
-Collective\Html\HtmlServiceProvider::class,
-#### Agregar en el arreglo Aliases:
-'Form' => Collective\Html\FormFacade::class,
-'Html' => Collective\Html\HtmlFacade::class,
-
-### Agregar style
-&lt;link href="css/bootstrap.min.css" rel="stylesheet"&gt;  ===>> {!! Html::style('css/bootstrap.min.css') !!}
-
-### Agregar Script
-&lt;script src="js/jquery.min.js"></script&gt;  ===>> {!! Html::script('js/jquery.min.js') !!}
-
-### Crear un formulario con LaravelCollective
-@extends('admin.index')
-@section('content')
-    {!! Form::open(['route' => 'usuario.store', 'method'=>'POST']) !!}
-    &lt;div class="form-group"&gt;
-        {!! Form::label('Nombre: ') !!}
-        {!! Form::text('name', null,['class' => 'form-control', 'placeholder' => 'Nombre del usuario']) !!}
-    &lt;/div&gt;
-    &lt;div class="form-group">
-        {!! Form::label('Correo: ') !!}
-        {!! Form::text('email', null,['class' => 'form-control', 'placeholder' => 'Correo del usuario']) !!}
-    &lt;/div&gt;
-    &lt;div class="form-group"&gt;
-        {!! Form::label('Password: ') !!}
-        {!! Form::password('password', ['class'=>'form-control', 'placeholder'=>'Password del Usuario']) !!}
-    &lt;/div>
-    {!! Form::submit('Registrar',['class'=> 'btn btn-primary']) !!}
-    {!! Form::close() !!}
-@endsection()
-
-### Uso de Request en el controlador
 public function store(Request $request)
     {
         /* Cargar el modelo usaurio */
@@ -50,8 +17,39 @@ public function store(Request $request)
             'email'     => $request['email'],
             'password'  => bcrypt($request['password']),
         ]);
-        /* Retornar un mensaje para nosotros */
-        return "Usuario registrado";
+        /* Redirecciona a usuario y retornar un mensaje para nosotros */
+        return redirect('/usuario')->with('message','store');
     }
 
-Nota: tener congfigurado el archivo .env
+
+### Creamos la vista usuario/index
+Ruta:resource/views/usuario/
+se crea el archivo index.blade.php
+
+@extends('layouts.admin')
+{{-- Mesaje por la sesion --}}
+&lt;?php $message = Session::get('message') ?>
+
+@if($message == 'store')
+    &lt;div class="alert alert-success alert-dismissible" role="alert">
+        &lt;button type="button" class="close" data-dismiss="alert" aria-label="Close">&lt;span aria-hidden="true">&times;&lt;/span>&lt;/button>
+        Usuario creado &lt;strong>Exitosamente!!!&lt;/strong>
+    &lt;/div>
+@endif
+
+@section('content')
+    &lt;table class="table">
+        &lt;thead>
+            &lt;th>Nombre&lt;/th>
+            &lt;th>Correo&lt;/th>
+            &lt;th>Operaciones&lt;/th>
+        &lt;/thead>
+        @foreach($users as $user)
+        &lt;tbody>
+            &lt;td>{{$user->name}}&lt;/td>
+            &lt;td>{{$user->email}}&lt;/td>
+        &lt;/tbody>
+            @endforeach
+    &lt;/table>
+@endsection
+
