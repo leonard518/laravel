@@ -1,4 +1,4 @@
-Class-10:
+Class-11:
 
 ## Upgrade 5.0 a 5.1
 ### En este capitulo se explica como actualizar laravel 5.0  a 5.1:
