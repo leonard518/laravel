@@ -36,4 +36,14 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    /*
+     * Metodo para encriptar el password de forma global
+     */
+    public function setPasswordAttribute($valor){
+        if(!empty($valor)){
+            $this->attributes['password'] = \Hash::make($valor);
+        }
+    }
+
 }

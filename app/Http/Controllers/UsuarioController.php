@@ -3,9 +3,17 @@
 namespace Cinema\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Cinema\User;
 use Cinema\Http\Requests;
 use Cinema\Http\Controllers\Controller;
+/* Metodo largo */
+//use Illuminate\Support\Facades\Redirect;
+//use Illuminate\Support\Facades\Session;
+/* Metodo corto */
+use Session;
+use Redirect;
+
+
 
 class UsuarioController extends Controller
 {
@@ -43,7 +51,7 @@ class UsuarioController extends Controller
         \Cinema\User::create([
             'name'      => $request['name'],
             'email'     => $request['email'],
-            'password'  => bcrypt($request['password']),
+            'password'  => $request['password']
         ]);
         /* Redirecciona a usuario y retornar un mensaje para nosotros */
         return redirect('/usuario')->with('message','store');
@@ -68,7 +76,8 @@ class UsuarioController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+        return view('usuario.edit', ['user' => $user]);
     }
 
     /**
@@ -80,7 +89,14 @@ class UsuarioController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+        $user->fill($request->all());
+        $user->save();
+
+        /* Redirecciona a usuario y retornar un mensaje */
+        Session::flash('message', 'Usuario deditado correctamente');
+        return Redirect::to('/usuario');
+
     }
 
     /**
