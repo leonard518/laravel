@@ -1,36 +1,15 @@
-Class-13:
+Class-13-b:
 
-## Crear un CRUD - Eliminar Usuarios.
-### Para borrar un registro es necesario ir a la vista d e los datos en este caso lo haremos en la vista Edit
-### Duplicamos el fomulario el archivo que daria de la siguiente manera
-@extends('layouts.admin')  
-@section('content')  
-    {{-- Formulario editar --}}  
-    {!! Form::model($user,['route' =&gt; ['usuario.update', $user-&gt;id], 'method' =&gt; 'PUT']) !!}  
-    @include('usuario.forms.usr')  
-    {!! Form::submit('Actualizar',['class'=&gt; 'btn btn-primary']) !!}  
-    {!! Form::close() !!}  
-    {{-- Formulario eliminar --}}  
-    {!! Form::open(['route' =&gt; ['usuario.destroy', $user-&gt;id], 'method' =&gt; 'DELETE']) !!}  
-        {!! Form::submit('Eliminar',['class'=&gt; 'btn btn-danger']) !!}  
-    {!! Form::close() !!}  
-@endsection  
+## Crear un CRUD - Eliminar Usuarios desde lista.
+### Para borrar un registro es necesario ir a la vista de los datos y crear un formulario, como en la rama class-13
+### Pero en este caso lo haremos en la vista Usuarios 
+Creamos una nueva ruta:  
+Route::get('usuario/{id}/destroy', [  
+    'uses'  =&gt;  'UsuarioController@destroy',  
+    'as'    =&gt;  'usuario.destroy'  
+]);  
+Nota: No genera conflicto con la otra funcion destroy ya que no usan el mismo metodo este usua el metodo GET y la otra es DELETE
 
+### En la vista index de admin agregar la siguiente linea en la misma etiquera &lt;td&gt;
+{!! link_to_route('usuario.destroy', $title = 'Eliminar', $parameters = $user-&gt;id, $attributes = ['class' =&gt; 'btn btn-danger', 'onclick' =&gt; 'return confirm("Seguro en Eliminar?")']) !!}
 
-### En el controlador UsurioController hacemos uso del modelo User y psamos el id que estamos recibiendo
-public function destroy($id)
-    {
-        User::destroy($id);
-        Session::flash('message', 'Usuario Eliminado correctamente');
-        return Redirect::to('/usuario');
-    }
-    
-### Activar las rutas correctar del panel admin
-Cambios en el siguiente codigo:  
-Enlace agragar:  
-&lt;a href="#"&gt;&lt;i class='fa fa-plus fa-fw'&gt;&lt;/i&gt; Agregar&lt;/a&gt;  
-&lt;a href="{!! URL::to('/usuario/create') !!}"&gt;&lt;i class='fa fa-plus fa-fw'&gt;&lt;/i&gt; Agregar&lt;/a&gt;
-  
-Enlace usuarios:    
-&lt;a href="#"&gt;&lt;i class='fa fa-list-ol fa-fw'&gt;&lt;/i&gt; Usuarios&lt;/a&gt;  
-&lt;a href="{!! URL::to('/usuario') !!}"&gt;&lt;i class='fa fa-list-ol fa-fw'&gt;&lt;/i&gt; Usuarios&lt;/a&gt;     

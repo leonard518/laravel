@@ -17,3 +17,11 @@ Route::get('reviews', 'FrontController@reviews');
 Route::get('admin', 'FrontController@admin');
 
 Route::resource('usuario', 'UsuarioController');
+/* Creamos la ruta para borrar el registo */
+Route::get('usuario/{id}/destroy', [
+    /* Se indica el controlador y el metodo */
+    'uses'  =>  'UsuarioController@destroy',
+    /* Se indica la ruta*/
+    'as'    =>  'usuario.destroy'
+    /* No genera conflicto con el otro metodo destroy ya que no usan el mismo metodo */
+]);

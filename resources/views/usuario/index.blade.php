@@ -18,7 +18,10 @@
         <tbody>
             <td>{{$user->name}}</td>
             <td>{{$user->email}}</td>
-            <td>{!! link_to_route('usuario.edit', $title = 'Editar', $parameters = $user->id, $attributes = ['class' => 'btn btn-primary']) !!}</td>
+            <td>
+                {!! link_to_route('usuario.edit', $title = 'Editar', $parameters = $user->id, $attributes = ['class' => 'btn btn-primary']) !!}
+                {!! link_to_route('usuario.destroy', $title = 'Eliminar', $parameters = $user->id, $attributes = ['class' => 'btn btn-danger', 'onclick' => 'return confirm("Seguro en Eliminar?")']) !!}
+            </td>
         </tbody>
             @endforeach
     </table>
