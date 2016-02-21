@@ -94,7 +94,7 @@ class UsuarioController extends Controller
         $user->save();
 
         /* Redirecciona a usuario y retornar un mensaje */
-        Session::flash('message', 'Usuario deditado correctamente');
+        Session::flash('message', 'Usuario Editado correctamente');
         return Redirect::to('/usuario');
 
     }
@@ -107,6 +107,8 @@ class UsuarioController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::destroy($id);
+        Session::flash('message', 'Usuario Eliminado correctamente');
+        return Redirect::to('/usuario');
     }
 }
