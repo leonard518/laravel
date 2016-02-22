@@ -18,7 +18,7 @@
         <tbody>
             <td>{{$user->name}}</td>
             <td>{{$user->email}}</td>
-            <td>{!! link_to_route('usuario.edit', $title = 'Editar', $parameters = $user->id, $attributes = ['class' => 'btn btn-primary']) !!}</td>
+            <td><a href="{{ route('usuario.edit', $user->id)  }}" class="btn btn-primary"><span class="fa fa-edit"></span></a></td>
         </tbody>
             @endforeach
     </table>

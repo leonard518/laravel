@@ -1,36 +1,48 @@
-Class-13:
+Class-13-extra:
 
-## Crear un CRUD - Eliminar Usuarios.
-### Para borrar un registro es necesario ir a la vista d e los datos en este caso lo haremos en la vista Edit
-### Duplicamos el fomulario el archivo que daria de la siguiente manera
-@extends('layouts.admin')  
-@section('content')  
-    {{-- Formulario editar --}}  
-    {!! Form::model($user,['route' =&gt; ['usuario.update', $user-&gt;id], 'method' =&gt; 'PUT']) !!}  
-    @include('usuario.forms.usr')  
-    {!! Form::submit('Actualizar',['class'=&gt; 'btn btn-primary']) !!}  
-    {!! Form::close() !!}  
-    {{-- Formulario eliminar --}}  
-    {!! Form::open(['route' =&gt; ['usuario.destroy', $user-&gt;id], 'method' =&gt; 'DELETE']) !!}  
-        {!! Form::submit('Eliminar',['class'=&gt; 'btn btn-danger']) !!}  
-    {!! Form::close() !!}  
-@endsection  
+## Mejorar la vista del listado de usuario con iconos y agregar componente Faker.
+### Quitaremos la palabra editar y colocamos un icono
+{!! link_to_route('usuario.edit', $title = 'Editar', $parameters = $user-&gt;id, $attributes = ['class' =&gt; 'btn btn-primary']) !!}  
+Por  
+&lt;a href="{{ route('usuario.edit', $user-&gt;id)  }}" class="btn btn-primary"&gt;&lt;span class="fa fa-edit"&gt;&lt;/span&gt;&lt;/a&gt;
 
+## Componente faker
+### Instalar el componente Faker
+#### Nos diriginos a composer.json en required-dev y actualizamos la version del componente
+"fzaninotto/faker": "1.5.*@dev"  
+En la terminal colocamos: composer update  
+Se actualiza composer  
 
-### En el controlador UsurioController hacemos uso del modelo User y psamos el id que estamos recibiendo
-public function destroy($id)
-    {
-        User::destroy($id);
-        Session::flash('message', 'Usuario Eliminado correctamente');
-        return Redirect::to('/usuario');
-    }
-    
-### Activar las rutas correctar del panel admin
-Cambios en el siguiente codigo:  
-Enlace agragar:  
-&lt;a href="#"&gt;&lt;i class='fa fa-plus fa-fw'&gt;&lt;/i&gt; Agregar&lt;/a&gt;  
-&lt;a href="{!! URL::to('/usuario/create') !!}"&gt;&lt;i class='fa fa-plus fa-fw'&gt;&lt;/i&gt; Agregar&lt;/a&gt;
-  
-Enlace usuarios:    
-&lt;a href="#"&gt;&lt;i class='fa fa-list-ol fa-fw'&gt;&lt;/i&gt; Usuarios&lt;/a&gt;  
-&lt;a href="{!! URL::to('/usuario') !!}"&gt;&lt;i class='fa fa-list-ol fa-fw'&gt;&lt;/i&gt; Usuarios&lt;/a&gt;     
+### Creamos un seeder desde artisan:
+php artisan make:seeder UserSeeder  
+Esto nos genera un archivo en database/seeds/UserSeeder
+
+### Uso de Faker
+#### Agregamos la clase que vamos usar y le asignamos un alias
+use Faker\Factory as Faker;  
+
+#### Creamos el objecto nuevo y metodos a usar
+public function run()  
+    {  
+        /* Agregamos la clase faker */  
+        $faker = Faker::create();  
+        /* Creamos el ciclo para definir la cantidad de usuarios que deseamos en este caso 30 */  
+        for($i = 0; $i < 30; $i++){  
+            /* Insertamos los campos */  
+            \DB::table('users')->insert(array(  
+                // En caso de name creamos el nombre y el apellido contatenado  
+                'name'      =>  $faker->firstName.' '.$faker->lastName,  
+                'email'     =>  $faker->email,  
+                'password'  =>  bcrypt('123456')  
+            ));  
+        }  
+    }  
+
+### Ejecutar los seeders
+#### Agregamos el seeder en DatabaseSeeder.php
+$this->call(UserSeeder::class);  
+Luego en consola Ejecutamos el seeder  
+php artisan migrate:refresh --seed  
+
+Si deseamnos ejecutar un seeder en particular 
+php artisan db:seed --class=UserTableSeeder
