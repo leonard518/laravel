@@ -1,77 +1,48 @@
-Class-14:
+Class-15:
 
-## Validaciones.
-### Crear form request validation para create y update:
-php artisan make:request UserCreateRequest  
-php artisan make:request UserUpdateRequest  
-Nota: Los archivos estan creados en app/Http/Requests/
-
-### Se debe autorizar el request antes de hacer uso del mismo:
-public function authorize()  
+## Paginacion.
+### Crear paginacion
+#### Ir al controlador  Usuario
+public function index()  
     {  
-        return true;  
+        /* Trae la informa del modelo  User*/  
+        $users = User::All();  
+        return view('usuario.index', compact('users'));  
     }  
+por  
 
-### Creamos las reglas de validacion para create:
-public function rules()  
+public function index()  
     {  
-        return [  
-            'name'      => 'required',  
-            'email'     => 'required',  
-            'password'  => 'required'  
-        ];  
+        /* Trae la informa del modelo  User*/  
+        $users = User::paginate(5);  
+        return view('usuario.index', compact('users'));  
     }  
     
-### En el controlador debemos importar el request create
-use Cinema\Http\Requests\UserCreateRequest;  
-
-### En el controlador cambiamos el Request:
-public function store(Request $request)  
-por  
-public function store(UserCreateRequest $request)  
-
-
-### Creamos las reglas de validacion para update:
-public function rules()
-    {
-        return [
-            'name'      => 'required',
-            'email'     => 'required',
-        ];
-    }
-
-### En el controlador debemos importar el request create
-public function update(Request $request, $id)  
-por  
-public function update(UserUpdateRequest $request, $id)
-
-### Generar mensaje de error:
-#### Creamos una sub-vista que se llame alerts
-#### Con el archivo request.blade.php
-@if(count($errors) &gt; 0)  
-    &lt;div class="alert alert-danger alert-dismissible" role="alert"&gt;  
-        &lt;button type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;&times;&lt;/span&gt;&lt;/button&gt;  
-        &lt;ul&gt;  
-            @foreach($errors-&gt;all() as $error )  
-                &lt;li&gt;{!! $error !!}&lt;/li&gt;  
-            @endforeach  
-        &lt;/ul&gt;  
-    &lt;/div&gt;  
-@endif  
-
-### Incluimos el alert request en cada vista:
-@include('alerts.request')  
+### Renderizamos las vistas 
+#### Para este caso el index de usuarios
+@extends('layouts.admin')
+@if(Session::has('message'))
+    &lt;div class="alert alert-success alert-dismissible" role="alert"&gt;
+        &lt;button type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;&times;&lt;/span&gt;&lt;/button&gt;
+        {{Session::get('message')}}
+    &lt;/div&gt;
+@endif
 
 
-### Si queremos agregar varias reglas las separamos con |
-#### Ejemplo con las siguientes reglas:
-public function rules()  
-    {  
-        return [  
-            'name'      => 'required',  
-            // Varias reglas son separadas por |  
-            // En este caso decimos que sea unico en la tabla users   
-            'email'     => 'required|unique:users',  
-            'password'  => 'required'  
-        ];  
-    }  
+@section('content')
+    &lt;table class="table"&gt;
+        &lt;thead&gt;
+            &lt;th&gt;Nombre&lt;/th&gt;
+            &lt;th&gt;Correo&lt;/th&gt;
+            &lt;th&gt;Operaciones&lt;/th&gt;
+        &lt;/thead&gt;
+        @foreach($users as $user)
+        &lt;tbody&gt;
+            &lt;td&gt;{{$user-&gt;name}}&lt;/td&gt;
+            &lt;td&gt;{{$user-&gt;email}}&lt;/td&gt;
+            &lt;td&gt;&lt;a href="{{ route('usuario.edit', $user-&gt;id)  }}" class="btn btn-primary"&gt;&lt;span class="fa fa-edit"&gt;&lt;/span&gt;&lt;/a&gt;&lt;/td&gt;
+        &lt;/tbody&gt;
+            @endforeach
+    &lt;/table&gt;
+    {!! $users-&gt;render() !!}
+@endsection

@@ -27,7 +27,7 @@ class UsuarioController extends Controller
     public function index()
     {
         /* Trae la informa del modelo  User*/
-        $users = \Cinema\User::All();
+        $users = User::paginate(5);
         return view('usuario.index', compact('users'));
     }
 
@@ -50,7 +50,7 @@ class UsuarioController extends Controller
     public function store(UserCreateRequest $request)
     {
         /* Cargar el modelo usaurio */
-        \Cinema\User::create([
+        User::create([
             'name'      => $request['name'],
             'email'     => $request['email'],
             'password'  => $request['password']
