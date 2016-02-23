@@ -1,48 +1,77 @@
-Class-13-extra:
+Class-14:
 
-## Mejorar la vista del listado de usuario con iconos y agregar componente Faker.
-### Quitaremos la palabra editar y colocamos un icono
-{!! link_to_route('usuario.edit', $title = 'Editar', $parameters = $user-&gt;id, $attributes = ['class' =&gt; 'btn btn-primary']) !!}  
-Por  
-&lt;a href="{{ route('usuario.edit', $user-&gt;id)  }}" class="btn btn-primary"&gt;&lt;span class="fa fa-edit"&gt;&lt;/span&gt;&lt;/a&gt;
+## Validaciones.
+### Crear form request validation para create y update:
+php artisan make:request UserCreateRequest  
+php artisan make:request UserUpdateRequest  
+Nota: Los archivos estan creados en app/Http/Requests/
 
-## Componente faker
-### Instalar el componente Faker
-#### Nos diriginos a composer.json en required-dev y actualizamos la version del componente
-"fzaninotto/faker": "1.5.*@dev"  
-En la terminal colocamos: composer update  
-Se actualiza composer  
-
-### Creamos un seeder desde artisan:
-php artisan make:seeder UserSeeder  
-Esto nos genera un archivo en database/seeds/UserSeeder
-
-### Uso de Faker
-#### Agregamos la clase que vamos usar y le asignamos un alias
-use Faker\Factory as Faker;  
-
-#### Creamos el objecto nuevo y metodos a usar
-public function run()  
+### Se debe autorizar el request antes de hacer uso del mismo:
+public function authorize()  
     {  
-        /* Agregamos la clase faker */  
-        $faker = Faker::create();  
-        /* Creamos el ciclo para definir la cantidad de usuarios que deseamos en este caso 30 */  
-        for($i = 0; $i < 30; $i++){  
-            /* Insertamos los campos */  
-            \DB::table('users')->insert(array(  
-                // En caso de name creamos el nombre y el apellido contatenado  
-                'name'      =>  $faker->firstName.' '.$faker->lastName,  
-                'email'     =>  $faker->email,  
-                'password'  =>  bcrypt('123456')  
-            ));  
-        }  
+        return true;  
     }  
 
-### Ejecutar los seeders
-#### Agregamos el seeder en DatabaseSeeder.php
-$this->call(UserSeeder::class);  
-Luego en consola Ejecutamos el seeder  
-php artisan migrate:refresh --seed  
+### Creamos las reglas de validacion para create:
+public function rules()  
+    {  
+        return [  
+            'name'      => 'required',  
+            'email'     => 'required',  
+            'password'  => 'required'  
+        ];  
+    }  
+    
+### En el controlador debemos importar el request create
+use Cinema\Http\Requests\UserCreateRequest;  
 
-Si deseamnos ejecutar un seeder en particular 
-php artisan db:seed --class=UserTableSeeder
+### En el controlador cambiamos el Request:
+public function store(Request $request)  
+por  
+public function store(UserCreateRequest $request)  
+
+
+### Creamos las reglas de validacion para update:
+public function rules()
+    {
+        return [
+            'name'      => 'required',
+            'email'     => 'required',
+        ];
+    }
+
+### En el controlador debemos importar el request create
+public function update(Request $request, $id)  
+por  
+public function update(UserUpdateRequest $request, $id)
+
+### Generar mensaje de error:
+#### Creamos una sub-vista que se llame alerts
+#### Con el archivo request.blade.php
+@if(count($errors) &gt; 0)  
+    &lt;div class="alert alert-danger alert-dismissible" role="alert"&gt;  
+        &lt;button type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;&times;&lt;/span&gt;&lt;/button&gt;  
+        &lt;ul&gt;  
+            @foreach($errors-&gt;all() as $error )  
+                &lt;li&gt;{!! $error !!}&lt;/li&gt;  
+            @endforeach  
+        &lt;/ul&gt;  
+    &lt;/div&gt;  
+@endif  
+
+### Incluimos el alert request en cada vista:
+@include('alerts.request')  
+
+
+### Si queremos agregar varias reglas las separamos con |
+#### Ejemplo con las siguientes reglas:
+public function rules()  
+    {  
+        return [  
+            'name'      => 'required',  
+            // Varias reglas son separadas por |  
+            // En este caso decimos que sea unico en la tabla users   
+            'email'     => 'required|unique:users',  
+            'password'  => 'required'  
+        ];  
+    }  

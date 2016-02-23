@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('content')
+    @include('alerts.request')
     {{-- Formulario editar --}}
     {!! Form::model($user,['route' => ['usuario.update', $user->id], 'method' => 'PUT']) !!}
     @include('usuario.forms.usr')
