@@ -1,48 +1,48 @@
-Class-15:
+Class-16:
 
-## Paginacion.
-### Crear paginacion
-#### Ir al controlador  Usuario
-public function index()  
+## Soft Deleting
+### Agregamos la clase a usar en el modelo que se desea usar
+#### Modelo User
+Agreganos la clase SoftDeletes  
+use Illuminate\Database\Eloquent\SoftDeletes;  
+
+Indicamos que haremos uso de la clase SoftDeletes  
+use Authenticatable, Authorizable, CanResetPassword, SoftDeletes;  
+
+### Debemos crear la variable deleted_at
+#### La cual tendra la informacion de cuando se borro el registro
+protected  $dates = ['deleted_at'];  
+
+### Se agrega la columna deleted_at en la tabla users
+#### desde artisan
+php artisan make:migration add_deleted_to_users_table --table=users  
+
+### Agregamos el campo en la migracion add_deleted_to_users_table
+public function up()  
     {  
-        /* Trae la informa del modelo  User*/  
-        $users = User::All();  
-        return view('usuario.index', compact('users'));  
+        Schema::table('users', function (Blueprint $table) {  
+            $table->softDeletes();  
+        });  
     }  
-por  
+#### Corremos la migracion con artisan
+php artisan migrate
 
+### Modificamos el UsuarioController 
+#### El metodo Delete modificamos lo siguiente:
+public function destroy($id)  
+    {  
+        $user = User::find($id);  
+        $user->delete();  
+        Session::flash('message', 'Usuario Eliminado correctamente');  
+        return Redirect::to('/usuario');  
+    }  
+    
+### Si queremos listar los elementos eliminados 
+#### En el metodo index modificamos lo siguiente:
 public function index()  
     {  
-        /* Trae la informa del modelo  User*/  
-        $users = User::paginate(5);  
+        /* Trae la informa del modelo User solamento los borrados*/  
+        $users = User::OnlyTrashed()->paginate(5);  
         return view('usuario.index', compact('users'));  
     }  
     
-### Renderizamos las vistas 
-#### Para este caso el index de usuarios
-@extends('layouts.admin')
-@if(Session::has('message'))
-    &lt;div class="alert alert-success alert-dismissible" role="alert"&gt;
-        &lt;button type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;&times;&lt;/span&gt;&lt;/button&gt;
-        {{Session::get('message')}}
-    &lt;/div&gt;
-@endif
-
-
-@section('content')
-    &lt;table class="table"&gt;
-        &lt;thead&gt;
-            &lt;th&gt;Nombre&lt;/th&gt;
-            &lt;th&gt;Correo&lt;/th&gt;
-            &lt;th&gt;Operaciones&lt;/th&gt;
-        &lt;/thead&gt;
-        @foreach($users as $user)
-        &lt;tbody&gt;
-            &lt;td&gt;{{$user-&gt;name}}&lt;/td&gt;
-            &lt;td&gt;{{$user-&gt;email}}&lt;/td&gt;
-            &lt;td&gt;&lt;a href="{{ route('usuario.edit', $user-&gt;id)  }}" class="btn btn-primary"&gt;&lt;span class="fa fa-edit"&gt;&lt;/span&gt;&lt;/a&gt;&lt;/td&gt;
-        &lt;/tbody&gt;
-            @endforeach
-    &lt;/table&gt;
-    {!! $users-&gt;render() !!}
-@endsection

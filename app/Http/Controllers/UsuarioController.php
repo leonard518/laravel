@@ -26,7 +26,7 @@ class UsuarioController extends Controller
      */
     public function index()
     {
-        /* Trae la informa del modelo  User*/
+        /* Trae la informa del modelo User*/
         $users = User::paginate(5);
         return view('usuario.index', compact('users'));
     }
@@ -109,7 +109,8 @@ class UsuarioController extends Controller
      */
     public function destroy($id)
     {
-        User::destroy($id);
+        $user = User::find($id);
+        $user->delete();
         Session::flash('message', 'Usuario Eliminado correctamente');
         return Redirect::to('/usuario');
     }
