@@ -14,11 +14,26 @@ use Cinema\Http\Controllers\Controller;
 /* Metodo corto */
 use Session;
 use Redirect;
-
+/* Nos permite obtener parametros que se encuentran en nuestras rutas */
+use Illuminate\Routing\Route;
 
 
 class UsuarioController extends Controller
 {
+    /**
+     * beforeFilters va a filtrar antes que se ejecute algo en el controlador
+     * se pueden definir los metodos y en cuales quieres que se ejecute
+     */
+    public function __construct()
+    {
+        $this->beforeFilter('@find', ['only'=>['edit', 'update', 'destroy']]);
+    }
+    /*
+     * Hacemos uso de la clase Route la cual nos permite obtener los parametros de la ruta
+     * */
+    public function find(Route $route){
+        $this->user = User::find($route->getParameter('usuario'));
+    }
     /**
      * Display a listing of the resource.
      *
@@ -50,13 +65,10 @@ class UsuarioController extends Controller
     public function store(UserCreateRequest $request)
     {
         /* Cargar el modelo usaurio */
-        User::create([
-            'name'      => $request['name'],
-            'email'     => $request['email'],
-            'password'  => $request['password']
-        ]);
+        User::create($request->all());
         /* Redirecciona a usuario y retornar un mensaje para nosotros */
-        return redirect('/usuario')->with('message','store');
+        Session::flash('message', 'Usuario Creado correctamente');
+        return Redirect::to('/usuario');
     }
 
     /**
@@ -78,8 +90,7 @@ class UsuarioController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find($id);
-        return view('usuario.edit', ['user' => $user]);
+        return view('usuario.edit', ['user' => $this->user]);
     }
 
     /**
@@ -91,14 +102,12 @@ class UsuarioController extends Controller
      */
     public function update(UserUpdateRequest $request, $id)
     {
-        $user = User::find($id);
-        $user->fill($request->all());
-        $user->save();
+        $this->user->fill($request->all());
+        $this->user->save();
 
         /* Redirecciona a usuario y retornar un mensaje */
         Session::flash('message', 'Usuario Editado correctamente');
         return Redirect::to('/usuario');
-
     }
 
     /**
@@ -109,8 +118,7 @@ class UsuarioController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::find($id);
-        $user->delete();
+        $this->user->delete();
         Session::flash('message', 'Usuario Eliminado correctamente');
         return Redirect::to('/usuario');
     }
