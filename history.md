@@ -1,158 +1,96 @@
-Class-17:
+Class-18:
 
-## Optimizando el Proyecto
-### Usuariocontroller 
-#### Agregamos todos los datos recuperados para la funcion store
-public function store(UserCreateRequest $request)  
-    {  
-        /* Cargar el modelo usaurio */  
-        User::create([  
-            'name'      => $request['name'],  
-            'email'     => $request['email'],  
-            'password'  => $request['password']  
-        ]);  
-        /* Redirecciona a usuario y retornar un mensaje para nosotros */  
-        return redirect('/usuario')->with('message','store');  
-    }  
-por  
-public function store(UserCreateRequest $request)  
-    {  
-        /* Cargar el modelo usaurio */  
-        User::create($request->all());  
-        /* Redirecciona a usuario y retornar un mensaje para nosotros */  
-        return redirect('/usuario')->with('message','store');  
-    }  
-    
-### Creamos un constructor beforeFilters
-#### Filtra todo los datos antes que se ejecute algo en el controlador
-public function __construct()  
-    {  
-        $this->beforeFilter('@find', ['only'=>['edit', 'update', 'destroy']]);  
-    }  
-### Creamos la funcion find que se menciona en el constructor
-#### Hacemos uso de la clase Route la cual nos permite obtener los parametros de la ruta
-public function find(Route $route){  
-        $this->user = User::find($route->getParameter('usuario'));  
-    }    
-#### Ahora cambiamos los metodos indicados en el beforeFilter
-public function edit($id)  
-    {  
-        $user = User::find($id);  
-        return view('usuario.edit', ['user' => $user]);  
-    }  
-por  
-public function edit($id)  
-    {  
-        return view('usuario.edit', ['user' => $this->user]);  
-    }  
+## Autenticacion
+### Determianr que driver a utilizar database / eloquent
+#### verificar el archivo config/auth.php
+#### Database
+Se debe indicar que tabla usar:  
+'table' => 'users'
 
-public function update(UserUpdateRequest $request, $id)  
-    {  
-        $user = User::find($id);  
-        $user->fill($request->all());  
-        $user->save();  
+#### Eloquent
+Se debe indicar que modelo usar:  
+'model' => 'eloquent'
 
-        /* Redirecciona a usuario y retornar un mensaje */  
-        Session::flash('message', 'Usuario Editado correctamente');  
-        return Redirect::to('/usuario');  
-    }  
-por  
-public function update(UserUpdateRequest $request, $id)  
-    {  
-        $this->user->fill($request->all());  
-        $this->user->save();  
-        /* Redirecciona a usuario y retornar un mensaje */  
-        Session::flash('message', 'Usuario Editado correctamente');  
-        return Redirect::to('/usuario');  
-    }  
+### Creamos el controlador LogController
+php artisan make:controller LogController
 
-public function destroy($id)  
-    {  
-        $user = User::find($id);  
-        $user->delete();  
-        Session::flash('message', 'Usuario Eliminado correctamente');  
-        return Redirect::to('/usuario');  
-    }  
-por  
-public function destroy($id)  
-    {  
-        $this->user->delete();  
-        Session::flash('message', 'Usuario Eliminado correctamente');  
-        return Redirect::to('/usuario');  
-    }  
+### Creamos el Request LoginRequest
+php artisan make:request LoginRequest
 
+### Creamos la ruta para LogController
+Route::resource('log', 'LogController');
 
-### Creamos la alerta success en views/alerts
-#### success.blade.php
-@if(Session::has('message'))  
-    <div class="alert alert-success alert-dismissible" role="alert">  
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
-        {{Session::get('message')}}  
-    </div>  
+### En el index redireccionamos el formulario a la ruta de LogController
+{!! Form::open(['route' =&gt; 'log.store', 'method'=&gt; 'POST']) !!}  
+&lt;div class="form-group"&gt;  
+{!! Form::label('correo', 'Correo:') !!}  
+{!! Form::email('email', null, ['class' =&gt; 'form-control', 'placeholder' =&gt;'Ingresa tu correo']) !!}  
+&lt;/div&gt;  
+&lt;div class="form-group"&gt;  
+{!! Form::label('contrasena', 'Contraseña:') !!}  
+{!! Form::password('password', ['class' =&gt; 'form-control', 'placeholder' =&gt;'Ingresa tu contraseña']) !!}  
+&lt;/div&gt;  
+{!! Form::submit('Iniciar', ['class' =&gt; 'btn btn-primary']) !!}  
+{!! Form::close() !!}  
+
+### LogController 
+#### Clases a usar:
+#### Clase LoginRequest, para utilizar las reglas de validacion   
+use Cinema\Http\Requests\LoginRequest;  
+#### Clase Redirect, para rdireccionar   
+use Redirect;  
+#### Clase Session, para manejo de sesioes en la app   
+use Session;  
+#### Clase Auth, el cual autentificara los datos necesarios   
+use Auth;  
+
+#### Agregamos los parametros a la clase store
+public function store(LoginRequest $request)  
+{  
+    if(Auth::attempt(  
+        [  
+            'email'     =&gt;   $request['email'],  
+            'password'  =&gt;   $request['password']  
+        ])){  
+        return Redirect::to('admin');  
+    }  
+    Session::flash('message-error', 'Datos incorrectos');  
+    return Redirect::to('/');  
+}  
+
+#### Creamos un nuevo alert errors
+@if(Session::has('message-error'))  
+    &lt;  div class="alert alert-danger alert-dismissible" role="alert"&gt;  
+        &lt;  button type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;  &lt;  span aria-hidden="true"&gt;  &times;&lt;  /span&gt;  &lt;  /button&gt;  
+        {{Session::get('message-error')}}  
+    &lt;  /div&gt;  
 @endif  
+#### Lo incluimos en el index
+@include('alerts.errors')  
 
-#### Cambiamos el contenido del index de la vista usuario
-@extends('layouts.admin')  
-@if(Session::has('message'))  
-    &lt;div class="alert alert-success alert-dismissible" role="alert"&gt;  
-        &lt;button type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;&times;&lt;/span&gt;&lt;/  button&gt;  
-        {{Session::get('message')}}  
-    &lt;/div&gt;  
-@endif  
-@section('content')  
-    &lt;table class="table"&gt;  
-        &lt;thead&gt;  
-            &lt;th&gt;Nombre&lt;/th&gt;  
-            &lt;th&gt;Correo&lt;/th&gt;  
-            &lt;th&gt;Operaciones&lt;/th&gt;  
-        &lt;/thead&gt;  
-        @foreach($users as $user)  
-        &lt;tbody&gt;  
-            &lt;td&gt;{{$user-&gt;name}}&lt;/td&gt;  
-            &lt;td&gt;{{$user-&gt;email}}&lt;/td&gt;  
-            &lt;td&gt;&lt;a href="{{ route('usuario.edit', $user-&gt;id)  }}" class="btn btn-primary"&gt;&lt;span class="fa fa-edit"&gt;&lt;/span&gt;&lt;  /a&gt;&lt;/td&gt;  
-        &lt;/tbody&gt;  
-            @endforeach  
-    &lt;/table&gt;  
-    {!! $users-&gt;render() !!}  
-@endsection  
-por  
-@extends('layouts.admin')  
-@include('alerts.success')  
-@section('content')  
-    &lt;table class="table"&gt;  
-        &lt;thead&gt;  
-            &lt;th&gt;Nombre&lt;/th&gt;  
-            &lt;th&gt;Correo&lt;/th&gt;  
-            &lt;th&gt;Operaciones&lt;/th&gt;  
-        &lt;/thead&gt;  
-        @foreach($users as $user)  
-        &lt;tbody&gt;  
-            &lt;td&gt;{{$user-&gt;name}}&lt;/td&gt;  
-            &lt;td&gt;{{$user-&gt;email}}&lt;/td&gt;  
-            &lt;td&gt;&lt;a href="{{ route('usuario.edit', $user-&gt;id)  }}" class="btn btn-primary"&gt;&lt;span class="fa fa-edit"&gt;&lt;/span&gt;&lt;  /a&gt;&lt;/td&gt;  
-        &lt;/tbody&gt;  
-            @endforeach  
-    &lt;/table&gt;  
-    {!! $users-&gt;render() !!}  
-@endsection  
+### Agregamos el nombre del usuario en el layout admin
+{!! Auth::user()-&gt;  name !!}&lt;  i class="fa fa-user fa-fw"&gt;  &lt;  /i&gt;    &lt;  i class="fa fa-caret-down"&gt;  &lt;  /i&gt;  
 
-### Cambios en el controlador de usuario
-#### Para este caso lo haremos en store
-public function store(UserCreateRequest $request)  
-    {  
-        /* Cargar el modelo usaurio */  
-        User::create($request->all());  
-        /* Redirecciona a usuario y retornar un mensaje para nosotros */  
-        Session::flash('message', 'Usuario Editado correctamente');  
-        return redirect('/usuario')->with('message','store');  
+### Creamos una ruta nueva
+Route::get('logout', 'LogController@logout');  
+
+### Creamos el metodo logout en el controlador LogController
+public function logout(){  
+        Auth::logout();  
+        return Redirect::to('/');  
     }  
-por  
-public function store(UserCreateRequest $request)  
-    {  
-        /* Cargar el modelo usaurio */  
-        User::create($request->all());  
-        /* Redirecciona a usuario y retornar un mensaje para nosotros */  
-        Session::flash('message', 'Usuario Editado correctamente');  
-        return Redirect::to('/usuario');    
-    }    
+
+### Agregamos la ruta en la vista admin para cerrar sesion
+&lt;  a href="{!! URL::to('/usuario') !!}"&gt;  &lt;  i class='fa fa-list-ol fa-fw'&gt;  &lt;  /i&gt;   Usuarios&lt;  /a&gt;  
+
+### Agregamos las reglas en LoginRequest
+public function rules()  
+{  
+    return [  
+        'email'     =&gt;   'required|email',  
+        'password'  =&gt;   'required'  
+    ];  
+}  
+
+### Agregamos el alert al index 
+@include('alerts.request')  
