@@ -26,6 +26,12 @@ class UsuarioController extends Controller
      */
     public function __construct()
     {
+        /* Protegemos el acceso a este controlador*/
+        $this->middleware('auth');
+        /* Indicamos los accesos permitidos al usuario */
+        /*$this->middleware('admin', ['only' => ['create','edit']]);*/
+        $this->middleware('admin');
+        /* Filtramo los datos antes de ejecutarse e indicamos encuales metodos seran aplicados */
         $this->beforeFilter('@find', ['only'=>['edit', 'update', 'destroy']]);
     }
     /*

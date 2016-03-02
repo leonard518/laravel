@@ -9,6 +9,10 @@ use Cinema\Http\Controllers\Controller;
 
 class FrontController extends Controller
 {
+    /* Indicamos a que metodo deseamos que se aplique el middleware */
+    public function __construct(){
+        $this->middleware('auth',['only' => 'admin']);
+    }
     /**
      * Display a listing of the resource.
      *
