@@ -1,70 +1,77 @@
-Class-19:
+Class-20:
 
-## Middleware
-### Sirve para filtrar las peticiones Http que entran en nuestra app
-#### Middleware Auth
-#### Declaramos el Middelware desde el controlador FrontController
-public function __construct(){  
-        $this-&gt;  middleware('auth',['only' =&gt;   'admin']);  
-    }  
-#### Declaramos el Middelware desde el controlador FrontController
-public function __construct()  
-    {  
-        /* Protegemos el acceso a este controlador*/  
-        $this-&gt;  middleware('auth');  
-        /* Indicamos los accesos permitidos al usuario */  
-        /*$this-&gt;  middleware('admin', ['only' =&gt;   ['create','edit']]);*/  
-        $this-&gt;  middleware('admin');  
-        /* Filtramo los datos antes de ejecutarse e indicamos encuales metodos seran aplicados */  
-        $this-&gt;  beforeFilter('@find', ['only'=&gt;  ['edit', 'update', 'destroy']]);  
-    }  
+## Crear con Ajax
+### Creamos el controlador Genero desde artisan
+php artisan make:controller GeneroController  
+#### Creamos la ruta en routes.php
+Route::resource('genero', 'GeneroController');  
 
-### Cambiamos la ruta del login en el Middleware/Authenticate
-return redirect()-&gt;guest('auth/login');  
-por   
-return redirect()-&gt;guest('/');
+### Creamos las vistas:
+#### Creamos las siguientes carpetas en views - genero\form 
+#### Creamos el archivo genero.blade.php
+&lt;div class="form-group"&gt;  
+    {!! Form::label('genre', 'Nombre: ') !!}  
+    {!! Form::text('genre', null, ['id'=&gt;'genre', 'class'=&gt;'form-control', 'placeholder'=&gt;'Ingresa el nombre']) !!}  
+&lt;/div&gt;  
 
-### Crear nuestro propio Middleware
-php artisan make:middleware Admin
-#### Luego de crear el middleware debemos registrar el middleware en el Kernel
-'admin' =&gt;   'Cinema\Http\Middleware\Admin',
+### Configurar la vista create.blade.php
+@extends('layouts.admin')  
+    &lt;div id="msj-success" class="alert alert-success alert-dismissible" role="alert" style="display: none"&gt;
+            &lt;button type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;&times;&lt;/span&gt;&lt;/button&gt;
+            &lt;strong&gt;Genero Agregado Correctamente.&lt;/strong&gt;
+        &lt;/div&gt;
+    @section('content')  
+        {!! Form::open() !!}  
+            @include('genero.form.genero')  
+            {!! link_to('#', $title = 'Registrar', $attributes = ['id'=&gt;'registro', 'class'=&gt;'btn btn-primary']) !!}  
+        {!! Form::close() !!}  
+    @endsection()  
 
-### Configuramos el middleware Admin
-#### Interfaz Guard, nos va a proporcionar la informacion del usuario que esta actuamente logeado
-use Illuminate\Contracts\Auth\Guard;
-#### Manejo de sesiones
-use Session;
-#### Creamos un constructor para igualar los valores
-protected $auth;  
-public function __construct(Guard $auth){  
-$this-&gt;auth = $auth;  
-}  
-#### Validamos que el usuario es igual a uno
-public function handle($request, Closure $next)  
+
+### Creamos el archivo script.js en public\js
+### Contenido del archivo
+$("#registro").click(function(){  
+    var dato = $("#genre").val();  
+    var route = "http://localhost:8000/genero";  
+    var token = $("#token").val();  
+
+    $.ajax({  
+        url:        route,  
+        headers:    {'X-CSRF-TOKEN':token},  
+        type:       'POST',  
+        dataType:   'json',  
+        data:       {genre: dato},  
+
+        success:function(){  
+            $("#msj-success").fadeIn();  
+            $("#genre").val("");  
+        }  
+    });  
+});  
+
+#### Agregamos el link en el layouts de admin
+{!! Html::script('js/script.js') !!}
+
+
+### En el modelo indicamos los elementos que pueden ser insertados
+protected $fillable = ['genre'];  
+
+
+### En el controlador GeneroController se agrega lo siguiente:
+#### Indicamos el modelo a usar
+use Cinema\Genre;
+#### La funcion create indicamos la vista a usar
+public function create()  
 {  
-    if($this-&gt;  auth-&gt;  user()-&gt;  id != 1){  
-        Session::flash('message-error', 'Sin Privilegios');  
-        return redirect()-&gt;  to('admin');  
-    }  
-    return $next($request);  
+    return view('genero.create');  
 }  
-#### Nota: Se podria validar por el tipo de usuario que es lo mas correcto.
-
-### Agregamos el mensaje al index del admin
-@include('alerts.errors')
-
-### Verificamos que el usuario no tenga acceso a todo el contenido
-#### En la vista admin del layouts validamos el id del usuario
-@if(Auth::user()-&gt;  id == 1)
-&lt;  li&gt;  
-    &lt;  a href="#"&gt;  &lt;  i class="fa fa-users fa-fw"&gt;  &lt;  /i&gt;   Usuario&lt;  span class="fa arrow"&gt;  &lt;  /span&gt;  &lt;  /a&gt;  
-    &lt;  ul class="nav nav-second-level"&gt;  
-        &lt;  li&gt;  
-            &lt;  a href="{!! URL::to('/usuario/create') !!}"&gt;  &lt;  i class='fa fa-plus fa-fw'&gt;  &lt;  /i&gt;   Agregar&lt;  /a&gt;  
-        &lt;  /li&gt;  
-        &lt;  li&gt;  
-            &lt;  a href="{!! URL::to('/usuario') !!}"&gt;  &lt;  i class='fa fa-list-ol fa-fw'&gt;  &lt;  /i&gt;   Usuarios&lt;  /a&gt;  
-        &lt;  /li&gt;  
-    &lt;  /ul&gt;  
-&lt;  /li&gt;  
-@endif
+#### La funcion store preguntamos si se hace uso del ajax
+public function store(Request $request)  
+    {  
+        if($request-&gt;ajax()){  
+            Genre::create($request-&gt;all());  
+            return response()-&gt;json([  
+                "mensaje" =&gt; 'Genero Creado'  
+            ]);  
+        }  
+    }  
