@@ -1,77 +1,44 @@
-Class-20:
+Class-21:
 
-## Crear con Ajax
-### Creamos el controlador Genero desde artisan
-php artisan make:controller GeneroController  
-#### Creamos la ruta en routes.php
-Route::resource('genero', 'GeneroController');  
-
-### Creamos las vistas:
-#### Creamos las siguientes carpetas en views - genero\form 
-#### Creamos el archivo genero.blade.php
-&lt;div class="form-group"&gt;  
-    {!! Form::label('genre', 'Nombre: ') !!}  
-    {!! Form::text('genre', null, ['id'=&gt;'genre', 'class'=&gt;'form-control', 'placeholder'=&gt;'Ingresa el nombre']) !!}  
-&lt;/div&gt;  
-
-### Configurar la vista create.blade.php
+## Leer con Ajax
+### Cramos la vista index para genero
 @extends('layouts.admin')  
-    &lt;div id="msj-success" class="alert alert-success alert-dismissible" role="alert" style="display: none"&gt;
-            &lt;button type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;&times;&lt;/span&gt;&lt;/button&gt;
-            &lt;strong&gt;Genero Agregado Correctamente.&lt;/strong&gt;
-        &lt;/div&gt;
-    @section('content')  
-        {!! Form::open() !!}  
-            @include('genero.form.genero')  
-            {!! link_to('#', $title = 'Registrar', $attributes = ['id'=&gt;'registro', 'class'=&gt;'btn btn-primary']) !!}  
-        {!! Form::close() !!}  
-    @endsection()  
+@section('content')  
+    &lt;table class="table"&gt;  
+        &lt;thead&gt;  
+        &lt;th&gt;Nombre&lt;/th&gt;  
+        &lt;th&gt;Operaciones&lt;/th&gt;  
+        &lt;/thead&gt;  
+        &lt;tbody id="datos"&gt;&lt;/tbody&gt;  
+    &lt;/table&gt;  
+@endsection()  
+@section('scripts')  
+    {!! Html::script('js/script2.js') !!}  
+@endsection  
 
+### Preparacion del ajax para listar los datos:
+#### En el layouts admin agregamos una seccion para los scripts
+@section('scripts')  
+@show  
 
-### Creamos el archivo script.js en public\js
-### Contenido del archivo
-$("#registro").click(function(){  
-    var dato = $("#genre").val();  
-    var route = "http://localhost:8000/genero";  
-    var token = $("#token").val();  
+#### Creamos el archivo js para script2.js
+// Preguntamos si el documento esta listo  
+$(document).ready(function(){  
+   // Id de la tabla index  
+   var tablaDatos = $("#datos");  
+   // La ruta para acceder a la informacion  
+   var route = "http://localhost:8000/generos";  
 
-    $.ajax({  
-        url:        route,  
-        headers:    {'X-CSRF-TOKEN':token},  
-        type:       'POST',  
-        dataType:   'json',  
-        data:       {genre: dato},  
-
-        success:function(){  
-            $("#msj-success").fadeIn();  
-            $("#genre").val("");  
-        }  
-    });  
+   // La peticion ajax method GET, Obtenemos una respuesta  
+   $.get(route, function(res){  
+      // Recorremos el arreglo res = respuesta  
+      $(res).each(function (key, value) {  
+         // Listamos los generos recibidos con append lo agregamos a la tabla  
+         tablaDatos.append("&lt;tr&gt;&lt;td&gt;"+value.genre+"&lt;/td&gt;&lt;td&gt;&lt;button class='btn btn-primary'&gt;Editar&lt;/button&gt;&lt;button class='btn btn-danger'&gt;Eliminar&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;")   
+      })  
+   });  
 });  
 
-#### Agregamos el link en el layouts de admin
-{!! Html::script('js/script.js') !!}
-
-
-### En el modelo indicamos los elementos que pueden ser insertados
-protected $fillable = ['genre'];  
-
-
-### En el controlador GeneroController se agrega lo siguiente:
-#### Indicamos el modelo a usar
-use Cinema\Genre;
-#### La funcion create indicamos la vista a usar
-public function create()  
-{  
-    return view('genero.create');  
-}  
-#### La funcion store preguntamos si se hace uso del ajax
-public function store(Request $request)  
-    {  
-        if($request-&gt;ajax()){  
-            Genre::create($request-&gt;all());  
-            return response()-&gt;json([  
-                "mensaje" =&gt; 'Genero Creado'  
-            ]);  
-        }  
-    }  
+#### Creamos la nueva ruta en routes.php
+// La ruta para el ajax  
+Route::get('generos', 'GeneroController@listing');  

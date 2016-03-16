@@ -11,3 +11,6 @@
         {!! link_to('#', $title = 'Registrar', $attributes = ['id'=>'registro', 'class'=>'btn btn-primary'], $secure = null) !!}
         {!! Form::close() !!}
     @endsection()
+    @section('scripts')
+        {!! Html::script('js/script.js') !!}
+    @endsection
