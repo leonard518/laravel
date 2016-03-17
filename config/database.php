@@ -54,6 +54,7 @@ return [
 
         'mysql' => [
             'driver'    => 'mysql',
+//            'unix_socket'=> '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
             'host'      => env('DB_HOST', 'localhost'),
             'database'  => env('DB_DATABASE', 'forge'),
             'username'  => env('DB_USERNAME', 'forge'),

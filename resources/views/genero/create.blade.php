@@ -2,13 +2,16 @@
     @section('content')
         {!! Form::open() !!}
         <div id="msj-success" class="alert alert-success alert-dismissible" role="alert" style="display: none">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <strong>Genero Agregado Correctamente.</strong>
+        </div>
+        <div id="msj-danger" class="alert alert-danger alert-dismissible" role="alert" style="display: none">
+            <strong>Campo requerido</strong>
         </div>
         {{-- Creamos el campo token oculto para validar que sea una peticion segura--}}
         <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token" >
         @include('genero.form.genero')
-        {!! link_to('#', $title = 'Registrar', $attributes = ['id'=>'registro', 'class'=>'btn btn-primary'], $secure = null) !!}
+        {{--{!! link_to('#', $title = 'Registrar', $attributes = ['id'=>'registro', 'class'=>'btn btn-primary'], $secure = null) !!}--}}
+        {!! Form::button('Registrar', $attributes = ['id' => 'registro', 'class' => 'btn btn-primary']) !!}
         {!! Form::close() !!}
     @endsection()
     @section('scripts')
