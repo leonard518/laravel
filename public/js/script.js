@@ -1,7 +1,7 @@
-$("#registro").click(function(){
-    var dato = $("#genre").val();
-    var route = "http://localhost:8000/genero";
-    var token = $("#token").val();
+function Datos(){
+    var dato = $('#genre').val();
+    var route = 'http://localhost:8000/genero';
+    var token = $('#token').val();
 
     $.ajax({
         url:        route,
@@ -11,8 +11,27 @@ $("#registro").click(function(){
         data:       {genre: dato},
 
         success:function(){
-            $("#msj-success").fadeIn();
-            $("#genre").val("");
+            $('#msj-success').fadeIn();
+            $('#genre').val('');
         }
     });
+};
+
+$('form').keypress(function(e){
+    if(e.which === 13){
+        if($('#genre').val() === ''){
+            $('#msj-danger').fadeIn();
+        }else{
+            Datos();
+        }
+        return false;
+    }
 });
+$('#registro').click(function(){
+    if($('#genre').val() === ''){
+        $('#msj-danger').fadeIn();
+    }else{
+        Datos();
+    }
+});
+
