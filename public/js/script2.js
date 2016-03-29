@@ -21,6 +21,22 @@ function Carga(){
     });
 };
 
+function Eliminar(btn) {
+    var route = "http://localhost:8000/genero/"+btn.value+"";
+    var token = $('#token').val();
+
+    $.ajax({
+        url: route,
+        headers: {'X-CSRF-TOKEN': token},
+        type: 'DELETE',
+        dataType: 'json',
+        success: function () {
+            Carga();
+            $("#msj-success").fadeIn();
+        }
+    });
+}
+
 function Mostrar(btn){
     //console.log(btn.value);
     var route = "http://localhost:8000/genero/"+btn.value+"/edit";
