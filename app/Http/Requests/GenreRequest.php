@@ -4,7 +4,7 @@ namespace Cinema\Http\Requests;
 
 use Cinema\Http\Requests\Request;
 
-class UserUpdateRequest extends Request
+class GenreRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class UserUpdateRequest extends Request
     public function rules()
     {
         return [
-            'name'      => 'required',
-            'email'     => 'required',
+            'genre' => 'required|min:3'
         ];
     }
 }

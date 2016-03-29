@@ -5,7 +5,7 @@
             <strong>Genero Agregado Correctamente.</strong>
         </div>
         <div id="msj-danger" class="alert alert-danger alert-dismissible" role="alert" style="display: none">
-            <strong>Campo requerido</strong>
+            <strong id="msj"></strong>
         </div>
         {{-- Creamos el campo token oculto para validar que sea una peticion segura--}}
         <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token" >

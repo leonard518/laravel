@@ -32,7 +32,7 @@ function Eliminar(btn) {
         dataType: 'json',
         success: function () {
             Carga();
-            $("#msj-success").fadeIn();
+            $("#msj-delete").fadeIn();
         }
     });
 }
@@ -62,7 +62,7 @@ $('#actualizar').click(function(){
         success: function () {
             Carga();
             $("#myModal").modal('toggle');
-            $("#msj-success").fadeIn();
+            $("#msj-update").fadeIn();
         }
     });
 })
