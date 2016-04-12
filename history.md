@@ -1,4 +1,4 @@
-Class-24:
+Class-25:
 
 ## Paginacion con Ajax
 ### Se crea un nuevo script
