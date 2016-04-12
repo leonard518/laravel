@@ -45,10 +45,13 @@ class UsuarioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         /* Trae la informa del modelo User*/
         $users = User::paginate(5);
+        if ($request->ajax()){
+            return response()->json(view('usuario.users', compact('users'))->render());
+        }
         return view('usuario.index', compact('users'));
     }
 

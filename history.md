@@ -1,19 +1,12 @@
 Class-24:
 
-## Validaciones con Ajax
-### Creamos un request nuevo
-php artisan make:request GenreRequest
+## Paginacion con Ajax
+### Se crea un nuevo script
+script3.js
 
-### Autorizamos el request y agregamos la regla
-'genre' => 'required'
+### Se agrega el escript3 al index
 
-### Agregamos GenreRequest en el controlador Genero
-use Cinema\Http\Requests\GenreRequest;
-#### Agregamos el request a la funcion store
 
-### Verificar los cambios en los siguientes archivos:
-script.js
-script2.js
-genero.blade.php
-genero/create.blade.php
-genero/index.blade.php
+### Se crea un nuevo archivo en la vista usuario
+resources/views/usuario/users.blade.php
+
