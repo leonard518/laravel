@@ -21,6 +21,7 @@ function Datos(){
         error:function(msj) {
             $("#msj").html(msj.responseJSON.genre);
             $("#msj-danger").fadeIn();
+            $('#genre').focus();
             $('#msj-success').fadeOut();
 
         }
