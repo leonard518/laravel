@@ -1,12 +1,12 @@
-Class-25:
+Class-26:
 
-## Paginacion con Ajax
-### Se crea un nuevo script
-script3.js
+## Subir Archivos
+### Creamos una nueva carpeta en las vistas pelicula
+#### Dentro de ella creamos una un archivo create.blade.php
+#### Dentro de la carpeta pelicula creamos una carpeta forms
+##### Dentro creamos el archivo pelicula.blade.php
 
-### Se agrega el escript3 al index
 
-### Se crea un nuevo archivo en la vista usuario
-resources/views/usuario/users.blade.php
-
-### Se crea una nueva clase (users) en donde estara la tabla con la lista de usuarios
+### Crea una nueva migracion
+php artisan make:migration add_path_to_movies_table
+#### Agregamos el campo path
