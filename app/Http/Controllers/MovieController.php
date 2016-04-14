@@ -8,6 +8,8 @@ use Cinema\Http\Requests;
 use Cinema\Http\Controllers\Controller;
 use Cinema\Genre;
 use Cinema\Movie;
+use Session;
+use Redirect;
 
 class MovieController extends Controller
 {
@@ -18,7 +20,8 @@ class MovieController extends Controller
      */
     public function index()
     {
-        return "Estoy en el index";
+        $movies = Movie::Movies();
+        return view('pelicula.index', compact('movies'));
     }
 
     /**
@@ -42,7 +45,8 @@ class MovieController extends Controller
     public function store(Request $request)
     {
         Movie::create($request->all());
-        return "<p class='text-success'>Listo</p>";
+        Session::flash('message', 'Pelicula Creada correctamente');
+        return Redirect::to('/pelicula');
     }
 
     /**

@@ -10,7 +10,7 @@
 
 <div class="form-group">
     {!! Form::label('direccion', 'Dirección:') !!}
-    {!! Form::text('cast', null, ['class' => 'form-control', 'placeholder' => 'Ingresa el elenco']) !!}
+    {!! Form::text('direction', null, ['class' => 'form-control', 'placeholder' => 'Ingresa el elenco']) !!}
 </div>
 
 <div class="form-group">
