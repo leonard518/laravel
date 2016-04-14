@@ -1,8 +1,23 @@
-Class-28:
+Class-29:
 
-## Actualizar y eliminar Archivos
-### creamos un archivo edit.blade.php  en la vista pelicula
+## Enviar correos
+### Configuramos el archivo config/mail.php
+host: smtp.gmail.com
+port: 465
+from: cuenta@gmail.com
+name: nombre
+encryption: ssl
 
-### En el controlador agregamo los middleware, beforeFilter y agregamos la funcion find
-#### Modificamos la funcion edit para cargar la vista y la funcion update para hacer la carga de los datos
-#### Modificamos la funcion destroy para eliminar el registro
+
+### Configuramos el archivo .env
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=465
+MAIL_USERNAME=cuenta@gmail.com
+MAIL_PASSWORD=passwordgmail
+MAIL_ENCRYPTION=ssl
+
+### Creamos MailController desde artisan
+
+### Enrutamos el nuevo controlador
+#### Editamos la funcion store
