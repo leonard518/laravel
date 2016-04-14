@@ -1,11 +1,8 @@
-Class-27:
+Class-28:
 
-## Leer Archivos
-### Creamos un metodo en el modelo Movie
+## Actualizar y eliminar Archivos
+### creamos un archivo edit.blade.php  en la vista pelicula
 
-
-### Creamos el archivo index.blade.php en peliculas
-
-> ### MovieController
->> #### Metodo index: retornamos la vista index
->> #### Metodo Store: retornamos un mensaje de sesion y redireccionamos al index
+### En el controlador agregamo los middleware, beforeFilter y agregamos la funcion find
+#### Modificamos la funcion edit para cargar la vista y la funcion update para hacer la carga de los datos
+#### Modificamos la funcion destroy para eliminar el registro

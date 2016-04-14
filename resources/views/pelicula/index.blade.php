@@ -17,7 +17,7 @@
             <td>
                 <img src="movies/{{$movie->path}}" alt="" style="width: 100px">
             </td>
-            <td>Editar</td>
+            <td><a href="{{ route('pelicula.edit', $movie->id)  }}" class="btn btn-primary"><span class="fa fa-edit"></span></a></td>
         </tbody>
         @endforeach
     </table>
