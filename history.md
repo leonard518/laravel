@@ -1,23 +1,16 @@
-Class-29:
+Class-30:
 
-## Enviar correos
-### Configuramos el archivo config/mail.php
-host: smtp.gmail.com
-port: 465
-from: cuenta@gmail.com
-name: nombre
-encryption: ssl
+## Restablecer Password
+### Creamos una nueva ruta
+
+### Creamos el link en la vista index
+
+### Creamos la carpeta auth, en la carpeta vista,  agregamos el archivo password.blade.php
+### Creamos un archivo password.blade.php, en la carpeta vista emails
 
 
-### Configuramos el archivo .env
-MAIL_DRIVER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=465
-MAIL_USERNAME=cuenta@gmail.com
-MAIL_PASSWORD=passwordgmail
-MAIL_ENCRYPTION=ssl
+### modificamos el siguiente archivo: vendor/laravel/framework/src/Illuminate/Foundation/Auth/ResetsPasswords.php
+quitamos la encrytacion ya esta encriptado el password desde el modelo
 
-### Creamos MailController desde artisan
-
-### Enrutamos el nuevo controlador
-#### Editamos la funcion store
+### modificamos el siguiente archivo: vendor/laravel/framework/src/Illuminate/Foundation/Auth/RedirectsUsers.php
+colocamos la ruta que va a redireccionar '/admin'

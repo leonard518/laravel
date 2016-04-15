@@ -1,0 +1,1 @@
+link RestPass {{ url('password/reset/'.$token) }}
