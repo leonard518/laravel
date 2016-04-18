@@ -17,10 +17,24 @@
                 {!!Form::open(['url' => '/password/reset'])!!}
                 <div class="col-md-6 contact-left">
 
-                    {!!Form::hidden('token', $token, null)!!}
-                    {!!Form::text('email', null, ['value'=>"{{old('email)}}"])!!}
-                    {!!Form::password('password')!!}
-                    {!!Form::password('password_confirmation')!!}
+                    <div class="form-group">
+                        {!!Form::hidden('token', $token, null)!!}
+                        {!!Form::text('email', null, ['value'=>"{{old('email)}}"])!!}
+                    </div>
+                    <div class="form-group">
+                        {!! Form::label('password', 'Password:') !!}
+                    </div>
+                    <div class="form-group">
+                        {!!Form::password('password')!!}
+                    </div>
+                    <div class="form-group">
+                        {!! Form::label('password_confirmation', 'Password Confirmacion:') !!}
+                    </div>
+
+                    <div class="form-group">
+                        {!!Form::password('password_confirmation')!!}
+                    </div>
+
                 </div>
 
                 {!!Form::submit('Restablecer')!!}

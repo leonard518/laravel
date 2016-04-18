@@ -1,16 +1,8 @@
-Class-30:
+Class-31:
 
-## Restablecer Password
-### Creamos una nueva ruta
-
-### Creamos el link en la vista index
-
-### Creamos la carpeta auth, en la carpeta vista,  agregamos el archivo password.blade.php
-### Creamos un archivo password.blade.php, en la carpeta vista emails
+## Mejorar rutas y seguridad
+### Modificamos los archivos script.js eliminamos la ruta localhost:8000/
 
 
-### modificamos el siguiente archivo: vendor/laravel/framework/src/Illuminate/Foundation/Auth/ResetsPasswords.php
-quitamos la encrytacion ya esta encriptado el password desde el modelo
-
-### modificamos el siguiente archivo: vendor/laravel/framework/src/Illuminate/Foundation/Auth/RedirectsUsers.php
-colocamos la ruta que va a redireccionar '/admin'
+## Manejo de rutas:
+### Creamos una nueva funcion notFound
